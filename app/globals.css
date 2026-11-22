@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+/* Desktop windows that are short (laptops, browser with bookmarks bar): tighten the sticky left column */
+@custom-variant short (@media (min-width: 64rem) and (max-height: 900px));
+@custom-variant tiny (@media (min-width: 64rem) and (max-height: 760px));
+
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Light: built on Pantone's 2026 Colour of the Year, Cloud Dancer (11-4201), with a cool ink.
+   Dark: Linear/Vercel-style near-black with a faint cool tint, never pure #000.
+   One accent, Electric Teal, used sparingly; lighter in dark mode so it stays readable.
+   Every text pairing below is checked at 4.5:1 or better. */
+:root {
+  --bg: #f0eee9;           /* Cloud Dancer */
+  --surface: #faf9f6;
+  --surface-2: #e8e5de;
+  --ink: #121419;
+  --body: #3a3d46;
+  --muted: #5f6370;
+  --line: #dedad2;
+  --line-strong: #c9c4b9;
+  --accent: #0b6a62;       /* text-safe teal: 5.6:1 on the page */
+  --accent-bright: #14b8a6;
+  --accent-soft: #d3eee8;
+  --ok: #15803d;
+  --spot: rgba(20, 184, 166, 0.10);
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg: #0e0f13;
+  --surface: #15171c;
+  --surface-2: #1c1f25;
+  --ink: #eeeff4;
+  --body: #c3c6d0;
+  --muted: #8d92a0;
+  --line: #252830;
+  --line-strong: #353943;
+  --accent: #5eead4;
+  --accent-bright: #2dd4bf;
+  --accent-soft: #0f2b29;
+  --ok: #4ade80;
+  --spot: rgba(45, 212, 191, 0.07);
+  color-scheme: dark;
+}
+
+/* The code side of the hero is always dark, in both themes */
+.code-skin {
+  --c-bg: #0a1220;
+  --c-grid: rgba(125, 211, 252, 0.05);
+  --c-panel: #131820;
+  --c-line: #232a35;
+  --c-text: #d6deeb;
+  --c-dim: #7d8899;
+  --c-key: #7dd3fc;
+  --c-str: #a5e3a0;
+  --c-num: #f9c97c;
+  --c-kw: #ff8a57;
+  --c-fn: #c4a7ff;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-soft: var(--accent-soft);
+  --color-ok: var(--ok);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shadow-float: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 32px -12px rgb(0 0 0 / 0.18);
+}
+
+@layer base {
+html { background: var(--bg); scroll-behavior: smooth; scroll-padding-top: 2rem; }
+body {
+  background: var(--bg);
+  color: var(--body);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--accent-bright); color: #fff; }
+:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 3px; border-radius: 6px; }
+
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Placeholder text from lib/content.ts: visible while editing, impossible to miss */
+.ph { background: var(--accent-soft); color: var(--accent); border-radius: 4px; padding: 0 3px; }
+
+/* Grain for depth, very subtle */
+.grain::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* cmdk palette */
+[cmdk-overlay] { position: fixed; inset: 0; background: rgb(0 0 0 / 0.45); backdrop-filter: blur(2px); z-index: 80; }
+[cmdk-dialog] {
+  position: fixed; left: 50%; top: 14vh; transform: translateX(-50%); z-index: 81;
+  width: min(640px, calc(100vw - 24px));
+}
+[cmdk-dialog][data-state="open"] { animation: cmdk-in 160ms cubic-bezier(.2,.8,.2,1); }
+@keyframes cmdk-in { from { opacity: 0; transform: translateX(-50%) scale(.97); } }
+[cmdk-list] { max-height: min(420px, 60vh); overflow: auto; overscroll-behavior: contain; }
+[cmdk-group-heading] { padding: 10px 12px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+[cmdk-item] { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 10px; cursor: pointer; color: var(--body); font-size: 14.5px; }
+[cmdk-item][data-selected="true"] { background: var(--surface-2); color: var(--ink); }
+[cmdk-empty] { padding: 24px; text-align: center; color: var(--muted); font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Project cover art (components/project-cover.tsx). Still by default; comes alive on hover
+   and on the case study page, so eight animated scenes never cost CPU while you scroll. */
+.cover-art .cv-packet { offset-rotate: 0deg; animation: cv-packet 2.2s cubic-bezier(.45,0,.55,1) infinite; }
+.cover-art .cv-orbit { animation: cv-orbit 9s linear infinite; }
+.cover-art .cv-orbit-slow { animation: cv-orbit 14s linear infinite; }
+.cover-art .cv-float { animation: cv-float 3.6s ease-in-out infinite; }
+.cover-art .cv-ping { animation: cv-ping 2.2s ease-out infinite; }
+.cover-art .cv-scan { animation: cv-scan 2.4s ease-in-out infinite alternate; }
+.cover-art .cv-glow { animation: cv-glow 3s ease-in-out infinite; }
+.cover-art .cv-blink { animation: cv-blink 1.6s ease-in-out infinite; }
+.cover-art .cv-grow { transform-box: fill-box; transform-origin: left; animation: cv-grow 3s ease-in-out infinite alternate; }
+.cover-art * { animation-play-state: paused !important; }
+.group:hover .cover-art *, .group:focus-visible .cover-art *, .cover-live .cover-art * { animation-play-state: running !important; }
+@keyframes cv-packet { from { offset-distance: 0%; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
+@keyframes cv-orbit { to { transform: rotate(360deg); } }
+@keyframes cv-float { 50% { transform: translateY(-5px); } }
+@keyframes cv-ping { from { transform: scale(1); opacity: .9; } to { transform: scale(1.8); opacity: 0; } }
+@keyframes cv-scan { to { transform: translateY(136px); } }
+@keyframes cv-glow { 50% { opacity: .5; } }
+@keyframes cv-blink { 50% { opacity: .25; } }
+@keyframes cv-grow { from { transform: scaleX(.55); } to { transform: scaleX(1); } }
+
+/* Isometric exploded stack (components/stack-scene.tsx). CSS 3D only. */
+.stack-scene { perspective: 1500px; --L: 168px; --gap: calc(14px + var(--open) * 44px); --drop: 70px; }
+@media (min-width: 640px) { .stack-scene { --L: 200px; --gap: calc(16px + var(--open) * 62px); --drop: 110px; } }
+.stack-plane {
+  width: var(--L); height: var(--L); transform-style: preserve-3d;
+  transform: translate(-50%, calc(-38% + var(--open) * var(--drop))) rotateX(calc(57deg - var(--ty) * 10deg)) rotateZ(calc(-42deg + var(--tx) * 16deg));
+}
+.stack-plane::before {
+  content: ""; position: absolute; inset: -12%; border-radius: 40px; transform: translateZ(-24px);
+  background: radial-gradient(closest-side, rgb(0 0 0 / .28), transparent); filter: blur(10px);
+}
+/* --lift is a registered number so the active layer rises and settles with a real transition,
+   while --gap keeps following the eased scroll every frame */
+@property --lift { syntax: "<number>"; inherits: false; initial-value: 0; }
+.stack-plane { will-change: transform; }
+.stack-layer {
+  position: absolute; inset: 0; transform-style: preserve-3d; --lift: 0;
+  transform: translateZ(calc(var(--z) * var(--gap) + var(--lift) * var(--open) * 18px));
+  transition: --lift .6s cubic-bezier(.22, 1, .36, 1);
+}
+.stack-layer.is-active { --lift: 1; }
+.stack-edge {
+  position: absolute; inset: 0; border-radius: 26px; transform: translateZ(-9px);
+  background: color-mix(in srgb, var(--c) 55%, #000 35%);
+}
+.stack-face {
+  position: absolute; inset: 0; border-radius: 26px; padding: 14px 16px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;
+  background: color-mix(in srgb, var(--surface) 84%, var(--c) 16%);
+  border: 1px solid color-mix(in srgb, var(--c) 50%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .25);
+  transition: background-color .5s ease-out, box-shadow .5s ease-out;
+}
+.stack-layer.is-active .stack-face {
+  background: color-mix(in srgb, var(--surface) 62%, var(--c) 38%);
+  box-shadow: 0 0 0 1.5px var(--c), 0 0 46px -4px var(--c), inset 0 1px 0 rgb(255 255 255 / .35);
+}
+.stack-tile {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
+  background: var(--bg); border: 1px solid var(--line);
+}
+.stack-name { font-size: 15px; font-weight: 650; color: var(--ink); letter-spacing: -0.01em; }
+.stack-beam {
+  position: absolute; left: 50%; top: 50%; width: 3px; margin-left: -1.5px;
+  height: calc(4 * var(--gap) + 10px); transform-origin: top center; transform: rotateX(90deg);
+  background: linear-gradient(to bottom, transparent, var(--accent-bright), transparent);
+  opacity: calc(var(--open) * .9); border-radius: 2px;
+}
