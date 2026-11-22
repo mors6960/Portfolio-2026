@@ -139,7 +139,7 @@ export function XrayDemo() {
             <span className="size-2.5 rounded-full bg-line-strong" />
           </div>
           <p className="truncate font-mono text-[12px] text-muted">
-            {backend ? "server · routes/tasks.js + mongodb" : "localhost:3000/ship-log"}
+            {backend ? "server · routes/tasks.js + mongodb" : `${(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/^https?:\/\//, "").replace(/\/$/, "")}/ship-log`}
           </p>
           <button
             type="button"
