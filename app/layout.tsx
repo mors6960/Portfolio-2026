@@ -42,6 +42,14 @@ const personLd = {
   knowsAbout: ["Node.js", "NestJS", "TypeScript", "PostgreSQL", "MongoDB", "Socket.IO", "Solidity", "Ethereum", "React", "Next.js", "AWS"],
 };
 
+const siteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: profile.name,
+  alternateName: `${profile.name} Portfolio`,
+  url: profile.siteUrl,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
@@ -52,6 +60,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           suppressHydrationWarning
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }}
+        />
+        <script
+          suppressHydrationWarning
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteLd).replace(/</g, "\\u003c") }}
         />
       </head>
       <body className="grain" suppressHydrationWarning>
